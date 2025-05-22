@@ -1,6 +1,6 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
-import { FiUpload } from "react-icons/fi";
+import { FiUpload, FiFile, FiImage, FiFileText } from "react-icons/fi";
 
 const acceptedFileTypes = {
   "application/pdf": [".pdf"],
@@ -13,35 +13,57 @@ const acceptedFileTypes = {
 };
 
 function DropzoneArea({ onDrop, maxFiles }) {
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     accept: acceptedFileTypes,
     maxFiles: maxFiles,
+    noClick: true, // Disable click-to-open on entire dropzone
   });
 
   return (
-    <section
-      {...getRootProps()}
-      className={`border-2 border-dashed rounded-xl p-10 text-center transition-all duration-300 ease-in-out
-        ${
-          isDragActive
-            ? "border-blue-600 bg-blue-50"
-            : "border-gray-300 hover:border-gray-400 bg-gray-50"
-        }
-        cursor-pointer mb-6`}
-      aria-labelledby="upload-area-title"
-    >
-      <input {...getInputProps()} />
-      <FiUpload className="mx-auto mb-4 text-gray-500" size={36} />
-      <p className="text-lg font-medium text-gray-700">
-        {isDragActive
-          ? "Drop the files here, we are ready!"
-          : "Drag and drop files here, or click to browse"}
-      </p>
-      <p className="text-sm text-gray-500 mt-2">
-        We can upload up to {maxFiles} files (PDF, DOCX, TXT, PNG, JPG)
-      </p>
-    </section>
+    <div className="max-w-3xl mx-auto">
+      <section
+        {...getRootProps()}
+        className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ease-in-out
+          ${
+            isDragActive
+              ? "border-blue-500 bg-blue-50"
+              : "border-gray-300 bg-gray-50 hover:border-gray-400"
+          }`}
+        aria-labelledby="dropzone-title"
+      >
+        <input {...getInputProps()} />
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <button
+            type="button"
+            onClick={open}
+            className="p-4 rounded-full bg-white shadow-sm hover:shadow-md transition-all duration-200
+                      border border-gray-200 hover:border-blue-400 focus:outline-none focus:ring-2 
+                      focus:ring-blue-500 focus:ring-opacity-50 cursor-pointer"
+            aria-label="Open file dialog"
+          >
+            <FiUpload
+              className="text-gray-500 hover:text-blue-600 transition-colors duration-200"
+              size={36}
+            />
+          </button>
+          <div>
+            <h2
+              id="dropzone-title"
+              className="text-lg font-medium text-gray-700"
+            >
+              {isDragActive ? "Drop your files here" : "Drag files here"}
+            </h2>
+            <p className="text-sm text-gray-500 mt-2">
+              or click the upload icon above
+            </p>
+            <p className="text-xs text-gray-400 mt-3">
+              Supported formats: PDF, DOCX, TXT, PNG, JPG (Max {maxFiles} files)
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
